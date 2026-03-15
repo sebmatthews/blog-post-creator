@@ -1,0 +1,17 @@
+# macOS
+.DS_Store
+
+# Credential files - never commit these
+scripts/linkedin_config.py
+scripts/twitter_config.py
+scripts/wp_config.py
+scripts/openai_config.py
+
+# Python
+__pycache__/
+*.pyc
+
+# Node / plugin build artefacts
+obsidian-plugin/node_modules/
+obsidian-plugin/main.js
+obsidian-plugin/*.js.map

@@ -1,0 +1,13 @@
+# twitter_config.py
+# Copy this file to twitter_config.py and fill in your credentials.
+# twitter_config.py is gitignored and must never be committed.
+#
+# HOW TO GET THESE VALUES:
+# 1. Go to https://developer.x.com and create a Project + App
+# 2. Under User Authentication Settings, set App permissions to 'Read and Write'
+# 3. Under Keys and Tokens, generate API Key, API Key Secret, Access Token, Access Token Secret
+
+TWITTER_API_KEY = "your_api_key_here"
+TWITTER_API_SECRET = "your_api_secret_here"
+TWITTER_ACCESS_TOKEN = "your_access_token_here"
+TWITTER_ACCESS_TOKEN_SECRET = "your_access_token_secret_here"

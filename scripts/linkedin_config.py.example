@@ -1,0 +1,13 @@
+# linkedin_config.py
+# Copy this file to linkedin_config.py and fill in your credentials.
+# linkedin_config.py is gitignored and must never be committed.
+#
+# HOW TO GET THESE VALUES:
+# 1. Create a LinkedIn app at https://www.linkedin.com/developers/apps
+# 2. Request 'Share on LinkedIn' and 'Sign In with LinkedIn using OpenID Connect'
+# 3. Generate an access token at https://www.linkedin.com/developers/tools/oauth/token-generator
+#    (tokens expire after 60 days — regenerate from the same URL when needed)
+# 4. Your Person ID appears on the token generator page after generating a token
+
+LINKEDIN_ACCESS_TOKEN = "your_access_token_here"
+LINKEDIN_PERSON_ID = "your_person_id_here"

@@ -1,0 +1,8 @@
+# openai_config.py
+# Copy this file to openai_config.py and fill in your credentials.
+# openai_config.py is gitignored and must never be committed.
+#
+# HOW TO GET THIS VALUE:
+# https://platform.openai.com/api-keys
+
+OPENAI_API_KEY = "sk-proj-your_key_here"

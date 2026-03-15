@@ -1,0 +1,10 @@
+# wp_config.py
+# Copy this file to wp_config.py and fill in your credentials.
+# wp_config.py is gitignored and must never be committed.
+#
+# HOW TO GET THESE VALUES:
+# WP_APP_PASSWORD: WordPress Admin > Users > Your Profile > Application Passwords
+
+WP_URL = "https://your-site.com"
+WP_USER = "your_username"
+WP_APP_PASSWORD = "xxxx xxxx xxxx xxxx xxxx xxxx"
