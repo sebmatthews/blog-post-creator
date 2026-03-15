@@ -75,6 +75,7 @@ Go to **Settings → Blog Post Creator** and fill in all sections.
 |---|---|
 | Python executable | `python3` or full path e.g. `/opt/homebrew/bin/python3` |
 | Image folder path | Absolute path to the folder where blog header images are stored and generated |
+| Blog posts folder path | Absolute path to the folder containing your markdown blog post files (used by Sync post dates) |
 
 ### WordPress
 

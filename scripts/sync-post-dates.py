@@ -41,8 +41,10 @@ except ImportError:
     print("Error: wp_config.py not found in the scripts folder.")
     sys.exit(1)
 
-# Blog posts folder is one level up from the scripts folder
-POSTS_DIR = os.path.dirname(script_dir)
+# Blog posts folder.
+# When run via the Obsidian plugin, BLOG_POSTS_DIR is set by the plugin settings.
+# When run standalone, falls back to one level up from the scripts folder.
+POSTS_DIR = os.environ.get('BLOG_POSTS_DIR', os.path.dirname(script_dir))
 
 DRY_RUN = '--dry-run' in sys.argv
 

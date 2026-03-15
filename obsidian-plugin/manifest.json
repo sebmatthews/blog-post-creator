@@ -1,7 +1,7 @@
 {
   "id": "blog-post-creator",
   "name": "Blog Post Creator",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "minAppVersion": "0.15.0",
   "description": "Run blog post publishing scripts from the command palette.",
   "author": "Seb Matthews",
