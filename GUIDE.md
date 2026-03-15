@@ -25,7 +25,7 @@ Scripts are bundled inside the plugin — no separate scripts folder to manage o
 |---|---|---|
 | Node.js + npm | Plugin build | [nodejs.org](https://nodejs.org) |
 | Python 3 | All `.py` scripts | `brew install python` |
-| pandoc | `publish.sh` | `brew install pandoc` |
+| markdown | `publish.py` | `pip install markdown` |
 | Pillow | `linkedin-post.py`, `twitter-post.py` | `pip install Pillow` |
 
 ---
@@ -178,7 +178,7 @@ Reads `image_prompt` from front matter, prepends a standard style prefix, calls 
 #### 2. Convert to HTML
 **Command:** `Blog Post Creator: Convert to HTML`
 
-Uses pandoc to convert the current markdown file to an HTML fragment and collapses line wrapping for clean pasting into Divi. Produces a `_BODY_ONLY.html` file alongside the markdown file.
+Converts the current markdown file to an HTML fragment using the Python `markdown` library and collapses line wrapping for clean pasting into Divi. Produces a `_BODY_ONLY.html` file alongside the markdown file.
 
 > Must be run before **Push to WordPress**.
 
@@ -251,7 +251,7 @@ Then run as normal:
 
 ```bash
 python3 scripts/wp-draft.py path/to/post.md
-bash scripts/publish.sh path/to/post.md
+python3 scripts/publish.py path/to/post.md
 python3 scripts/sync-post-dates.py --dry-run
 ```
 

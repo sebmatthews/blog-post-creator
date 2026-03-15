@@ -5,7 +5,7 @@ import * as path from 'path';
 
 // Script sources — bundled at build time via esbuild text loader
 import generateImageScript  from '../scripts/generate-image.py';
-import publishScript        from '../scripts/publish.sh';
+import publishScript        from '../scripts/publish.py';
 import wpDraftScript        from '../scripts/wp-draft.py';
 import linkedinPostScript   from '../scripts/linkedin-post.py';
 import twitterPostScript    from '../scripts/twitter-post.py';
@@ -52,7 +52,7 @@ const DEFAULT_SETTINGS: BlogPostCreatorSettings = {
 // Which config files each script needs written before it runs
 const SCRIPT_CONFIGS: Record<string, string[]> = {
     'generate-image.py':  ['openai_config.py'],
-    'publish.sh':         [],
+    'publish.py':         [],
     'wp-draft.py':        ['wp_config.py'],
     'linkedin-post.py':   ['linkedin_config.py'],
     'twitter-post.py':    ['twitter_config.py'],
@@ -106,7 +106,7 @@ export default class BlogPostCreator extends Plugin {
         this.addCommand({
             id: 'convert-to-html',
             name: 'Convert to HTML',
-            callback: () => this.runOnCurrentFile('publish.sh', 'bash'),
+            callback: () => this.runOnCurrentFile('publish.py', 'python'),
         });
 
         this.addCommand({
@@ -162,7 +162,7 @@ export default class BlogPostCreator extends Plugin {
 
         const files: Record<string, string> = {
             'generate-image.py':       generateImageScript,
-            'publish.sh':              publishScript,
+            'publish.py':              publishScript,
             'wp-draft.py':             wpDraftScript,
             'linkedin-post.py':        linkedinPostScript,
             'twitter-post.py':         twitterPostScript,
