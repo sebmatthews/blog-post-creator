@@ -20,8 +20,10 @@ import mimetypes
 import urllib.request
 import urllib.error
 
-# Folder where featured images are stored
-IMAGE_FOLDER = "/users/sebmatthews/onedrive/holder/content/writing/2026/blog posts/imagery"
+# Folder where featured images are stored.
+# When run via the Obsidian plugin, BLOG_IMAGE_FOLDER is set by the plugin settings.
+# When run standalone, falls back to the path below.
+IMAGE_FOLDER = os.environ.get('BLOG_IMAGE_FOLDER', '/users/sebmatthews/onedrive/holder/content/writing/2026/blog posts/imagery')
 
 # Load credentials from wp_config.py in the same folder
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))

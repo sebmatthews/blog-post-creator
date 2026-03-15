@@ -17,8 +17,10 @@ import base64
 import urllib.request
 import urllib.error
 
-# Folder where generated images are saved
-IMAGE_FOLDER = "/users/sebmatthews/onedrive/holder/content/writing/2026/blog posts/imagery"
+# Folder where generated images are saved.
+# When run via the Obsidian plugin, BLOG_IMAGE_FOLDER is set by the plugin settings.
+# When run standalone, falls back to the path below.
+IMAGE_FOLDER = os.environ.get('BLOG_IMAGE_FOLDER', '/users/sebmatthews/onedrive/holder/content/writing/2026/blog posts/imagery')
 
 # Style prefix applied to every prompt - derived from Writing/Templates/image-creation-workflow.md.
 # Keeps individual image_prompt fields short and post-specific.

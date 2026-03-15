@@ -25,8 +25,10 @@ from datetime import date
 LINKEDIN_IMAGE_WIDTH = 1200
 LINKEDIN_IMAGE_HEIGHT = 627
 
-# Folder where blog header images are stored
-IMAGE_FOLDER = "/users/sebmatthews/onedrive/holder/content/writing/2026/blog posts/imagery"
+# Folder where blog header images are stored.
+# When run via the Obsidian plugin, BLOG_IMAGE_FOLDER is set by the plugin settings.
+# When run standalone, falls back to the path below.
+IMAGE_FOLDER = os.environ.get('BLOG_IMAGE_FOLDER', '/users/sebmatthews/onedrive/holder/content/writing/2026/blog posts/imagery')
 
 # LinkedIn API version
 LI_VERSION = "202601"

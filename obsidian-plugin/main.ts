@@ -3,12 +3,22 @@ import { exec } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
 
+// Script sources — bundled at build time via esbuild text loader
+import generateImageScript  from '../scripts/generate-image.py';
+import publishScript        from '../scripts/publish.sh';
+import wpDraftScript        from '../scripts/wp-draft.py';
+import linkedinPostScript   from '../scripts/linkedin-post.py';
+import twitterPostScript    from '../scripts/twitter-post.py';
+import syncPostDatesScript  from '../scripts/sync-post-dates.py';
+import convertMdScript      from '../scripts/convert-md-to-html.sh';
+import stripBodyScript      from '../scripts/strip_body.sh';
+
 // ---------------------------------------------------------------------------
 // Settings
 // ---------------------------------------------------------------------------
 
 interface BlogPostCreatorSettings {
-    scriptsPath: string;
+    imageFolderPath: string;
     pythonPath: string;
     // WordPress
     wpUrl: string;
@@ -27,7 +37,7 @@ interface BlogPostCreatorSettings {
 }
 
 const DEFAULT_SETTINGS: BlogPostCreatorSettings = {
-    scriptsPath: '',
+    imageFolderPath: '',
     pythonPath: 'python3',
     wpUrl: '',
     wpUser: '',
@@ -87,6 +97,7 @@ export default class BlogPostCreator extends Plugin {
 
     async onload() {
         await this.loadSettings();
+        this.extractScripts();
 
         this.addCommand({
             id: 'generate-image',
@@ -136,7 +147,39 @@ export default class BlogPostCreator extends Plugin {
     }
 
     // -----------------------------------------------------------------------
-    // Config file helpers
+    // Script extraction — writes bundled scripts to the plugin folder on load.
+    // Re-runs on every load so scripts are always in sync with the installed
+    // plugin version.
+    // -----------------------------------------------------------------------
+
+    private getScriptsDir(): string {
+        const basePath = (this.app.vault.adapter as any).basePath as string;
+        const pluginDir = path.join(basePath, this.manifest.dir ?? '.obsidian/plugins/blog-post-creator');
+        return path.join(pluginDir, 'scripts');
+    }
+
+    private extractScripts() {
+        const scriptsDir = this.getScriptsDir();
+        fs.mkdirSync(scriptsDir, { recursive: true });
+
+        const files: Record<string, string> = {
+            'generate-image.py':       generateImageScript,
+            'publish.sh':              publishScript,
+            'wp-draft.py':             wpDraftScript,
+            'linkedin-post.py':        linkedinPostScript,
+            'twitter-post.py':         twitterPostScript,
+            'sync-post-dates.py':      syncPostDatesScript,
+            'convert-md-to-html.sh':   convertMdScript,
+            'strip_body.sh':           stripBodyScript,
+        };
+
+        for (const [filename, content] of Object.entries(files)) {
+            fs.writeFileSync(path.join(scriptsDir, filename), content, { encoding: 'utf8', mode: 0o755 });
+        }
+    }
+
+    // -----------------------------------------------------------------------
+    // Config file helpers — written just before execution, deleted after
     // -----------------------------------------------------------------------
 
     private buildConfigContent(configName: string): string {
@@ -172,10 +215,11 @@ export default class BlogPostCreator extends Plugin {
     }
 
     private writeConfigs(scriptName: string): string[] {
+        const scriptsDir = this.getScriptsDir();
         const needed = SCRIPT_CONFIGS[scriptName] ?? [];
         const written: string[] = [];
         for (const configName of needed) {
-            const configPath = path.join(this.settings.scriptsPath, configName);
+            const configPath = path.join(scriptsDir, configName);
             fs.writeFileSync(configPath, this.buildConfigContent(configName), { encoding: 'utf8', mode: 0o600 });
             written.push(configPath);
         }
@@ -209,12 +253,8 @@ export default class BlogPostCreator extends Plugin {
     }
 
     private runScript(scriptName: string, type: 'python' | 'bash', filePath: string | null) {
-        if (!this.settings.scriptsPath) {
-            new Notice('Scripts path not set. Go to Settings → Blog Post Creator.');
-            return;
-        }
-
-        const scriptPath = path.join(this.settings.scriptsPath, scriptName);
+        const scriptsDir = this.getScriptsDir();
+        const scriptPath = path.join(scriptsDir, scriptName);
         const python = this.settings.pythonPath || 'python3';
 
         let cmd: string;
@@ -233,7 +273,13 @@ export default class BlogPostCreator extends Plugin {
 
         const writtenConfigs = this.writeConfigs(scriptName);
 
-        exec(cmd, { cwd: this.settings.scriptsPath }, (error, stdout, stderr) => {
+        exec(cmd, {
+            cwd: scriptsDir,
+            env: {
+                ...process.env,
+                BLOG_IMAGE_FOLDER: this.settings.imageFolderPath,
+            },
+        }, (error, stdout, stderr) => {
             this.deleteConfigs(writtenConfigs);
             const output = [stdout, stderr].filter(Boolean).join('\n').trim();
             const modalTitle = error ? `${label} — error` : `${label} — done`;
@@ -262,24 +308,24 @@ class BlogPostCreatorSettingTab extends PluginSettingTab {
         containerEl.createEl('h2', { text: 'General' });
 
         new Setting(containerEl)
-            .setName('Scripts folder path')
-            .setDesc('Absolute path to the folder containing the blog post scripts.')
-            .addText(text => text
-                .setPlaceholder('/absolute/path/to/scripts')
-                .setValue(this.plugin.settings.scriptsPath)
-                .onChange(async (value) => {
-                    this.plugin.settings.scriptsPath = value.trim();
-                    await this.plugin.saveSettings();
-                }));
-
-        new Setting(containerEl)
             .setName('Python executable')
-            .setDesc('Path to python3. Change if python3 is not on your PATH (e.g. /usr/local/bin/python3).')
+            .setDesc('Path to python3. Change if python3 is not on your PATH (e.g. /opt/homebrew/bin/python3).')
             .addText(text => text
                 .setPlaceholder('python3')
                 .setValue(this.plugin.settings.pythonPath)
                 .onChange(async (value) => {
                     this.plugin.settings.pythonPath = value.trim() || 'python3';
+                    await this.plugin.saveSettings();
+                }));
+
+        new Setting(containerEl)
+            .setName('Image folder path')
+            .setDesc('Absolute path to the folder where blog header images are stored and generated.')
+            .addText(text => text
+                .setPlaceholder('/absolute/path/to/imagery')
+                .setValue(this.plugin.settings.imageFolderPath)
+                .onChange(async (value) => {
+                    this.plugin.settings.imageFolderPath = value.trim();
                     await this.plugin.saveSettings();
                 }));
 
