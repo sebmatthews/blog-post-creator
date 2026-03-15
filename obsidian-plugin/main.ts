@@ -17,6 +17,7 @@ import syncPostDatesScript  from '../scripts/sync-post-dates.py';
 
 interface BlogPostCreatorSettings {
     imageFolderPath: string;
+    blogPostsDir: string;
     pythonPath: string;
     // WordPress
     wpUrl: string;
@@ -36,6 +37,7 @@ interface BlogPostCreatorSettings {
 
 const DEFAULT_SETTINGS: BlogPostCreatorSettings = {
     imageFolderPath: '',
+    blogPostsDir: '',
     pythonPath: 'python3',
     wpUrl: '',
     wpUser: '',
@@ -274,6 +276,7 @@ export default class BlogPostCreator extends Plugin {
             env: {
                 ...process.env,
                 BLOG_IMAGE_FOLDER: this.settings.imageFolderPath,
+                BLOG_POSTS_DIR: this.settings.blogPostsDir,
             },
         }, (error, stdout, stderr) => {
             this.deleteConfigs(writtenConfigs);
@@ -322,6 +325,17 @@ class BlogPostCreatorSettingTab extends PluginSettingTab {
                 .setValue(this.plugin.settings.imageFolderPath)
                 .onChange(async (value) => {
                     this.plugin.settings.imageFolderPath = value.trim();
+                    await this.plugin.saveSettings();
+                }));
+
+        new Setting(containerEl)
+            .setName('Blog posts folder path')
+            .setDesc('Absolute path to the folder containing your markdown blog post files. Used by Sync post dates.')
+            .addText(text => text
+                .setPlaceholder('/absolute/path/to/blog posts')
+                .setValue(this.plugin.settings.blogPostsDir)
+                .onChange(async (value) => {
+                    this.plugin.settings.blogPostsDir = value.trim();
                     await this.plugin.saveSettings();
                 }));
 
