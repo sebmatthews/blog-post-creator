@@ -38,8 +38,10 @@ TWITTER_URL_LENGTH = 23
 # Maximum tweet length
 TWITTER_MAX_LENGTH = 280
 
-# Folder where blog header images are stored
-IMAGE_FOLDER = "/users/sebmatthews/onedrive/holder/content/writing/2026/blog posts/imagery"
+# Folder where blog header images are stored.
+# When run via the Obsidian plugin, BLOG_IMAGE_FOLDER is set by the plugin settings.
+# When run standalone, falls back to the path below.
+IMAGE_FOLDER = os.environ.get('BLOG_IMAGE_FOLDER', '/users/sebmatthews/onedrive/holder/content/writing/2026/blog posts/imagery')
 
 # Twitter/X API endpoints
 MEDIA_UPLOAD_URL = "https://api.x.com/2/media/upload"

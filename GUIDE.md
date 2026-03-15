@@ -2,6 +2,8 @@
 
 A publishing pipeline for Obsidian that takes a markdown post through image generation, HTML conversion, WordPress draft creation, and social posting — all from the command palette.
 
+Scripts are bundled inside the plugin — no separate scripts folder to manage or configure.
+
 ---
 
 ## Contents
@@ -36,7 +38,7 @@ npm install
 npm run build
 ```
 
-This produces `obsidian-plugin/main.js`.
+This produces `obsidian-plugin/main.js` with all scripts bundled inside it.
 
 ---
 
@@ -51,13 +53,15 @@ mkdir -p /path/to/your/vault/.obsidian/plugins/blog-post-creator
 2. Copy the two required files:
 
 ```bash
-cp obsidian-plugin/main.js     /path/to/your/vault/.obsidian/plugins/blog-post-creator/
+cp obsidian-plugin/main.js       /path/to/your/vault/.obsidian/plugins/blog-post-creator/
 cp obsidian-plugin/manifest.json /path/to/your/vault/.obsidian/plugins/blog-post-creator/
 ```
 
 3. In Obsidian: **Settings → Community Plugins → enable "Blog Post Creator"**
 
 > If you see a warning about community plugins being disabled, click **Turn on community plugins** first.
+
+When the plugin loads it automatically extracts the bundled scripts to `.obsidian/plugins/blog-post-creator/scripts/` inside your vault. These are refreshed every time Obsidian starts, so updating the plugin always brings the latest scripts with it.
 
 ---
 
@@ -69,8 +73,8 @@ Go to **Settings → Blog Post Creator** and fill in all sections.
 
 | Field | Value |
 |---|---|
-| Scripts folder path | Absolute path to the `scripts/` folder in this repo |
 | Python executable | `python3` or full path e.g. `/opt/homebrew/bin/python3` |
+| Image folder path | Absolute path to the folder where blog header images are stored and generated |
 
 ### WordPress
 
@@ -167,14 +171,14 @@ All commands are available via `Cmd+P` → type **Blog Post Creator**.
 #### 1. Generate header image
 **Command:** `Blog Post Creator: Generate header image`
 
-Reads `image_prompt` from front matter, prepends a standard style prefix, calls the OpenAI image API, and saves the result to the imagery folder. Requires `image` and `image_prompt` to be set in front matter.
+Reads `image_prompt` from front matter, prepends a standard style prefix, calls the OpenAI image API, and saves the result to the image folder configured in settings. Requires `image` and `image_prompt` to be set in front matter.
 
 ---
 
 #### 2. Convert to HTML
 **Command:** `Blog Post Creator: Convert to HTML`
 
-Runs `publish.sh` on the current file. Uses pandoc to convert the markdown to an HTML fragment and collapses line wrapping for clean pasting into Divi. Produces a `_BODY_ONLY.html` file alongside the markdown file.
+Uses pandoc to convert the current markdown file to an HTML fragment and collapses line wrapping for clean pasting into Divi. Produces a `_BODY_ONLY.html` file alongside the markdown file.
 
 > Must be run before **Push to WordPress**.
 
@@ -189,7 +193,7 @@ Requires the `_BODY_ONLY.html` file to exist. Wraps the HTML in Divi shortcodes,
 
 #### 4. Review and schedule in WordPress
 
-At this point, open the WordPress draft in your browser, review it, and set a publish date. The post does not need to be live before posting to social.
+Open the WordPress draft in your browser, review it, and set a publish date. The post does not need to be live before posting to social.
 
 ---
 
@@ -218,7 +222,7 @@ Run this after WordPress publishes a scheduled post to keep local filenames in s
 
 ## Updating after code changes
 
-After editing `main.ts`:
+After editing `main.ts` or any script in `scripts/`:
 
 ```bash
 cd obsidian-plugin
@@ -226,7 +230,7 @@ npm run build
 cp main.js /path/to/your/vault/.obsidian/plugins/blog-post-creator/
 ```
 
-Then in Obsidian: disable and re-enable the plugin, or restart Obsidian.
+Then in Obsidian: disable and re-enable the plugin, or restart Obsidian. The updated scripts are extracted automatically on next load.
 
 ---
 
@@ -249,6 +253,12 @@ Then run as normal:
 python3 scripts/wp-draft.py path/to/post.md
 bash scripts/publish.sh path/to/post.md
 python3 scripts/sync-post-dates.py --dry-run
+```
+
+The `BLOG_IMAGE_FOLDER` environment variable can be set to override the default image folder path:
+
+```bash
+BLOG_IMAGE_FOLDER="/path/to/imagery" python3 scripts/generate-image.py post.md
 ```
 
 > The config files are gitignored and will never be committed.
