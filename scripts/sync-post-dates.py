@@ -148,8 +148,8 @@ def update_front_matter_field(filepath, field, value):
         content = f.read()
 
     new_content = re.sub(
-        rf'^({re.escape(field)}:[ ]*).*$',
-        rf'\g<1>{value}',
+        rf'^{re.escape(field)}:[ ]*.*$',
+        rf'{field}: {value}',
         content,
         count=1,
         flags=re.MULTILINE
