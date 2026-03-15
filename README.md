@@ -2,7 +2,7 @@
 
 An Obsidian plugin that connects your markdown writing to a full blog publishing pipeline. From a single note you can generate a header image, push the post to WordPress as a draft, and share to LinkedIn and Twitter/X — all from the Obsidian command palette.
 
-> **Desktop only.** The plugin runs Python scripts and requires a local Python installation.
+> **Desktop only.** The plugin runs Python scripts and requires a local Python installation. It has only been tested on Mac and will likely not work on PC.
 
 ---
 
