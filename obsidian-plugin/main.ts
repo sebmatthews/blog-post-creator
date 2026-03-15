@@ -10,8 +10,6 @@ import wpDraftScript        from '../scripts/wp-draft.py';
 import linkedinPostScript   from '../scripts/linkedin-post.py';
 import twitterPostScript    from '../scripts/twitter-post.py';
 import syncPostDatesScript  from '../scripts/sync-post-dates.py';
-import convertMdScript      from '../scripts/convert-md-to-html.sh';
-import stripBodyScript      from '../scripts/strip_body.sh';
 
 // ---------------------------------------------------------------------------
 // Settings
@@ -169,8 +167,6 @@ export default class BlogPostCreator extends Plugin {
             'linkedin-post.py':        linkedinPostScript,
             'twitter-post.py':         twitterPostScript,
             'sync-post-dates.py':      syncPostDatesScript,
-            'convert-md-to-html.sh':   convertMdScript,
-            'strip_body.sh':           stripBodyScript,
         };
 
         for (const [filename, content] of Object.entries(files)) {
